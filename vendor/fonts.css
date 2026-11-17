@@ -1,0 +1,13 @@
+/* 행복네컷 로컬 폰트 (오프라인용) - 모두 SIL Open Font License 1.1 */
+@font-face{font-family:'Jua';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/Jua-Regular.woff2') format('woff2');}
+@font-face{font-family:'Gowun Dodum';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/GowunDodum-Regular.woff2') format('woff2');}
+@font-face{font-family:'Do Hyeon';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/DoHyeon-Regular.woff2') format('woff2');}
+@font-face{font-family:'Gaegu';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/Gaegu-Regular.woff2') format('woff2');}
+@font-face{font-family:'Hi Melody';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/HiMelody-Regular.woff2') format('woff2');}
+@font-face{font-family:'Dongle';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/Dongle-Regular.woff2') format('woff2');}
+@font-face{font-family:'Poor Story';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/PoorStory-Regular.woff2') format('woff2');}
+@font-face{font-family:'Nanum Pen Script';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/NanumPenScript-Regular.woff2') format('woff2');}
+@font-face{font-family:'Nanum Gothic';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/NanumGothic-Regular.woff2') format('woff2');}
+@font-face{font-family:'Nanum Gothic';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/NanumGothic-Bold.woff2') format('woff2');}
+@font-face{font-family:'Noto Sans KR';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/NotoSansKR-Regular.woff2') format('woff2');}
+@font-face{font-family:'Noto Sans KR';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/NotoSansKR-Bold.woff2') format('woff2');}
