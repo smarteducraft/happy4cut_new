@@ -1,5 +1,5 @@
 /**
- * 행복네컷 QR 공유 서버 (Google Apps Script) - V3.60
+ * 행복네컷 QR 공유 서버 (Google Apps Script) - V3.73
  * ------------------------------------------------------------
  * 하는 일
  *  1) doPost : 행복네컷 프로그램이 보낸 사진을 내 구글 드라이브 "행복네컷 공유" 폴더에 저장
@@ -12,7 +12,10 @@
  *  - setupCleanupTrigger 를 한 번 실행하면 매일 오래된 사진을 지움
  */
 
-const SHARED_KEY  = 'change-me';      // ⚠️ 꼭 바꾸세요. 행복네컷 관리자 설정의 "공유 키"와 동일하게
+const SHARED_KEY  = 'change-me';      // ⚠️ 이 줄의 따옴표 안만 바꾸세요. 행복네컷 관리자 설정의 "공유 키"와 동일하게
+
+// ✅ V3.72: "바꾸기 전 값" 비교용. 찾기·바꾸기로 키를 바꿔도 이 값은 바뀌지 않도록 나눠서 적음
+const PLACEHOLDER_KEY_ = ['change', 'me'].join('-');
 const FOLDER_NAME = '행복네컷 공유';    // 사진이 저장될 드라이브 폴더 이름
 const KEEP_DAYS   = 7;                 // 사진 보관 기간(일). 0이면 자동 삭제 안 함
 const MAX_BYTES   = 15 * 1024 * 1024;  // 업로드 최대 크기
@@ -24,7 +27,7 @@ function doPost(e) {
   try {
     const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
 
-    if (!SHARED_KEY || SHARED_KEY === 'change-me') {
+    if (!SHARED_KEY || SHARED_KEY === PLACEHOLDER_KEY_) {
       return json_({ ok: false, error: 'SERVER_KEY_NOT_SET' });
     }
     if (body.key !== SHARED_KEY) {
@@ -68,7 +71,7 @@ function doGet(e) {
 
   // 행복네컷 관리자 설정의 "연결 테스트"
   if (p.ping) {
-    return json_({ ok: true, app: 'happy4cut', keySet: SHARED_KEY !== 'change-me' });
+    return json_({ ok: true, app: 'happy4cut', keySet: !!SHARED_KEY && SHARED_KEY !== PLACEHOLDER_KEY_ });
   }
 
   if (p.id) {
@@ -79,10 +82,11 @@ function doGet(e) {
         .addMetaTag('viewport', 'width=device-width, initial-scale=1');
     }
     const blob = file.getBlob();
-    const t = HtmlService.createTemplateFromFile('Page');
+    const t = pageTemplate_();   // ✅ V3.72: HTML 파일 이름이 page / Page 어느 쪽이어도 동작
     t.name = file.getName();
     t.dataUrl = 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
     t.downloadUrl = 'https://drive.google.com/uc?export=download&id=' + encodeURIComponent(file.getId());
+    t.thumbUrl = 'https://drive.google.com/thumbnail?sz=w1600&id=' + encodeURIComponent(file.getId());   // ✅ V3.73: 미리보기 예비 주소
     t.keepDays = KEEP_DAYS;
     return t.evaluate()
       .setTitle('행복네컷')
@@ -162,4 +166,10 @@ function messagePage_(title, msg) {
   return '<div style="font-family:sans-serif;text-align:center;padding:48px 20px;color:#374151">' +
          '<div style="font-size:22px;font-weight:700;color:#db2777;margin-bottom:10px">' + title + '</div>' +
          '<div style="font-size:15px">' + msg + '</div></div>';
+}
+
+// ✅ V3.72: HTML 파일 이름을 소문자(page)로 만들어도 동작하도록
+function pageTemplate_() {
+  try { return HtmlService.createTemplateFromFile('Page'); }
+  catch (err) { return HtmlService.createTemplateFromFile('page'); }
 }

@@ -18,7 +18,11 @@
   <div class="wrap">
     <h1>📸 행복네컷</h1>
     <div class="sub"><?= name ?></div>
-    <div class="photo"><img src="<?= dataUrl ?>" alt="행복네컷 사진"></div>
+    <!-- ✅ V3.73: 일반 출력 태그는 data: 주소를 안전하지 않은 주소로 보고 지워 버림
+         → 느낌표가 붙은 출력 태그로 그대로 출력 (dataUrl은 서버가 만든 base64 값이라 안전)
+         혹시 실패하면 구글 드라이브 미리보기 이미지로 한 번 더 시도 -->
+    <div class="photo"><img src="<?!= dataUrl ?>" alt="행복네컷 사진"
+      onerror="this.onerror=null; this.src='<?= (typeof thumbUrl !== 'undefined') ? thumbUrl : '' ?>';"></div>
     <a class="btn" href="<?= downloadUrl ?>">사진 내려받기</a>
     <div class="tip">
       사진을 <b>길게 눌러</b> “사진 앱에 저장”해도 돼요.<br>
