@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>행복네컷 (V3.70)</title>
+  <title>행복네컷 (V3.80)</title>
 
   <!-- ✅ V3.50 (I2): 인터넷 없이 동작하도록 모든 리소스를 로컬(vendor/)에서 불러옴 -->
   <link href="vendor/tailwind.css" rel="stylesheet">
@@ -41,6 +41,12 @@
       border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.1);
     }
     .color-dot.active{border-color:#ec4899;transform:scale(1.15);box-shadow:0 0 8px rgba(236,72,153,.4);}
+    /* ✅ V3.80: 원하는 프레임 색 고르기 */
+    .custom-color-dot{ background:conic-gradient(#ef4444,#f59e0b,#eab308,#22c55e,#06b6d4,#3b82f6,#a855f7,#ec4899,#ef4444) !important;
+      display:flex; align-items:center; justify-content:center; }
+    .custom-color-dot > span{ width:62%; height:62%; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+      font-size:13px; font-weight:800; color:#ec4899; line-height:1; }
+    .frame-color-hint{ font-size:11px; color:#9ca3af; text-align:center; margin-top:4px; }
 
     .preview-container{width:100%;height:100%;position:relative;display:flex;justify-content:center;align-items:center;}
     .canvas-wrapper{position:relative;height:100%;aspect-ratio:2/6;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);}
@@ -51,6 +57,71 @@
     .decorate-row.landscape{ flex-direction:column; }
     .decorate-row.landscape > .preview-box{ order:-1; flex:none; }
     .decorate-row.landscape > .controls-box{ min-height:0; }
+    /* ✅ V3.80: 대기 화면 */
+    .attract{ position:fixed; inset:0; z-index:90; overflow:hidden; cursor:pointer; user-select:none; -webkit-user-select:none; color:#fff; }
+    .attract.hidden{ display:none; }
+    .at-bg{ position:absolute; inset:-20%; background:linear-gradient(120deg,#ff6fa8,#ff9a76,#ffd36e,#8fd3ff,#b18cff,#ff6fa8); background-size:300% 300%; animation:atBg 16s ease infinite; }
+    @keyframes atBg{ 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+    .at-floaties{ position:absolute; inset:0; pointer-events:none; }
+    .at-floaty{ position:absolute; bottom:-12vmin; font-size:6vmin; opacity:.5; animation:atFloat linear infinite; }
+    @keyframes atFloat{ 0%{ transform:translateY(0) rotate(0deg);} 100%{ transform:translateY(-125vh) rotate(360deg);} }
+    .at-inner{ position:relative; height:100%; display:flex; align-items:center; justify-content:center; gap:6vw; padding:4vmin 6vw; }
+    .at-left{ flex:1 1 auto; max-width:52vw; display:flex; flex-direction:column; align-items:flex-start; gap:2.2vmin; }
+    .at-badge{ font-family:'Jua',sans-serif; font-size:3.2vmin; background:rgba(255,255,255,.28); padding:1vmin 2.6vmin; border-radius:999px; backdrop-filter:blur(4px); }
+    .at-title{ font-family:'Jua',sans-serif; font-size:17vmin; line-height:1; margin:0; letter-spacing:-.02em;
+               text-shadow:0 .6vmin 0 #e0457b, 0 1.6vmin 3vmin rgba(0,0,0,.25); animation:atBounce 2.4s ease-in-out infinite; }
+    @keyframes atBounce{ 0%,100%{ transform:translateY(0) rotate(-1deg);} 50%{ transform:translateY(-1.4vmin) rotate(1deg);} }
+    .at-sub{ font-family:'Jua',sans-serif; font-size:4.6vmin; line-height:1.35; margin:0; text-shadow:0 .3vmin 1vmin rgba(0,0,0,.2); }
+    .at-steps{ list-style:none; padding:0; margin:.6vmin 0 0; display:flex; flex-wrap:wrap; gap:1.4vmin; }
+    .at-steps li{ font-family:'Jua',sans-serif; font-size:3vmin; background:rgba(255,255,255,.92); color:#db2777; padding:1vmin 2.2vmin 1vmin 1vmin; border-radius:999px; display:flex; align-items:center; gap:1vmin; box-shadow:0 .6vmin 1.6vmin rgba(0,0,0,.12); }
+    .at-steps li span{ display:inline-flex; align-items:center; justify-content:center; width:4.4vmin; height:4.4vmin; border-radius:50%; background:#ec4899; color:#fff; font-size:2.6vmin; }
+    .at-count{ font-family:'Jua',sans-serif; font-size:3.4vmin; background:rgba(0,0,0,.18); padding:1vmin 2.4vmin; border-radius:1.6vmin; }
+    .at-count.hidden{ display:none; }
+    .at-count b{ font-size:4.4vmin; color:#fff36e; }
+    .at-cta{ margin-top:1.6vmin; font-family:'Jua',sans-serif; font-size:6vmin; background:#fff; color:#ec4899; padding:2.2vmin 5vmin; border-radius:999px;
+             box-shadow:0 1.2vmin 0 #f9a8d4, 0 2vmin 4vmin rgba(0,0,0,.25); animation:atPulse 1.6s ease-in-out infinite; }
+    @keyframes atPulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.06);} }
+    .at-hint{ font-size:2.4vmin; opacity:.85; padding-left:1vmin; }
+    .at-right{ flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+    .at-strip{ position:relative; height:82vmin; aspect-ratio:600/1800; background:#fff; border-radius:1vmin; box-shadow:0 3vmin 6vmin rgba(0,0,0,.3);
+               padding:4.4vmin 2.2vmin 5vmin; display:flex; flex-direction:column; gap:.7vmin; transform:rotate(4deg); animation:atSway 5s ease-in-out infinite; }
+    @keyframes atSway{ 0%,100%{ transform:rotate(4deg);} 50%{ transform:rotate(1.5deg) translateY(-1vmin);} }
+    .at-strip-title{ position:absolute; top:1vmin; left:0; right:0; text-align:center; font-family:'Jua',sans-serif; color:#ec4899; font-size:2.8vmin; }
+    .at-slot{ position:relative; flex:1 1 0; border-radius:.4vmin; overflow:hidden; background:#e5e7eb; }
+    .at-face{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10vmin; opacity:0; transform:scale(.4); transition:opacity .25s, transform .35s cubic-bezier(.3,1.6,.5,1); }
+    .at-slot.filled .at-face{ opacity:1; transform:scale(1); }
+    .at-view{ position:absolute; inset:.8vmin; border:.4vmin dashed rgba(255,255,255,.95); border-radius:.4vmin; display:none; align-items:center; justify-content:center; font-size:4.6vmin; background:rgba(17,24,39,.55); }
+    .at-slot.live .at-view{ display:flex; }
+    .at-cd{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Jua',sans-serif; font-size:9vmin; color:#fff; text-shadow:0 .4vmin 1vmin rgba(0,0,0,.5); }
+    .at-cd.pop{ animation:atCd .45s ease-out; }
+    @keyframes atCd{ 0%{ transform:scale(1.8); opacity:0;} 60%{ transform:scale(.95); opacity:1;} 100%{ transform:scale(1);} }
+    .at-flash{ position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; }
+    .at-flash.on{ animation:atFlash .35s ease-out; }
+    @keyframes atFlash{ 0%{ opacity:1;} 100%{ opacity:0;} }
+    .at-date{ position:absolute; bottom:1.4vmin; left:0; right:0; text-align:center; color:#6b7280; font-size:1.8vmin; }
+    .at-sticker{ position:absolute; font-size:8vmin; opacity:0; transform:scale(0) rotate(-30deg); transition:opacity .2s, transform .45s cubic-bezier(.3,1.7,.5,1); }
+    .at-sticker.s1{ right:-3.6vmin; top:26%; }
+    .at-sticker.s2{ left:-3.4vmin; top:58%; font-size:7vmin; }
+    .at-strip.decorated .at-sticker{ opacity:1; transform:scale(1) rotate(12deg); }
+    @media (max-aspect-ratio: 1/1){
+      .at-inner{ flex-direction:column; gap:3vh; padding:5vh 6vw; }
+      .at-left{ max-width:none; align-items:center; text-align:center; }
+      .at-steps{ justify-content:center; }
+      .at-strip{ height:46vh; }
+    }
+
+    /* ✅ V3.80: 일시 정지 */
+    .pause-btn{ flex:1; background:#f59e0b; color:#fff; padding:16px 0; border-radius:12px; font-family:'Jua',sans-serif; font-size:24px; box-shadow:0 2px 6px rgba(0,0,0,.15); transition:transform .1s; }
+    .pause-btn:active{ transform:scale(.95); }
+    .pause-btn.is-paused{ background:#10b981; animation:pausePulse 1.2s ease-in-out infinite; }
+    @keyframes pausePulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(16,185,129,.55);} 50%{ box-shadow:0 0 0 10px rgba(16,185,129,0);} }
+    .pause-overlay{ position:absolute; inset:0; z-index:25; background:rgba(17,24,39,.62); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:#fff; text-align:center; }
+    .pause-overlay.hidden{ display:none; }
+    .pause-title{ font-family:'Jua',sans-serif; font-size:clamp(28px,5vw,44px); }
+    .pause-resume{ background:#10b981; color:#fff; font-family:'Jua',sans-serif; font-size:26px; padding:14px 34px; border-radius:999px; box-shadow:0 8px 20px rgba(0,0,0,.25); }
+    .pause-resume:active{ transform:scale(.95); }
+    .pause-hint{ font-size:14px; opacity:.85; line-height:1.5; }
+
     /* ✅ V3.70 (B2): 사진 조절 안내 */
     .photo-adjust-hint{ font-size:12px; line-height:1.55; color:#6b7280; text-align:center; margin:0 0 10px; word-break:keep-all; }
     .adj-btn{ padding:6px 4px; font-size:20px; line-height:1.2; white-space:nowrap; }
@@ -182,13 +253,50 @@
 </head>
 
 <body class="h-[100dvh] w-full bg-gray-100 flex justify-center items-center overflow-hidden text-gray-800">
-  <div class="w-full h-full max-w-[500px] bg-white flex flex-col shadow-2xl relative overflow-hidden">
+  <!-- =========================================================
+       ✅ V3.80: 대기 화면 (지나가는 사람 눈에 띄는 큰 시작 화면 + 데모 애니메이션)
+       - 화면 전체(외부 모니터 전체)를 덮음, 터치/클릭/아무 키 → 바로 촬영 시작
+       ========================================================= -->
+  <div id="attract" class="attract hidden" aria-label="화면을 터치하면 시작">
+    <div class="at-bg"></div>
+    <div class="at-floaties" id="at-floaties"></div>
+    <div class="at-inner">
+      <div class="at-left">
+        <div class="at-badge">📸 사진 체험 부스</div>
+        <h1 class="at-title">행복네컷</h1>
+        <p class="at-sub">친구·선생님과 함께<br>네 컷 사진 찍고 바로 받아 가세요!</p>
+        <ol class="at-steps">
+          <li><span>1</span>찰칵! 찍기</li>
+          <li><span>2</span>4장 고르기</li>
+          <li><span>3</span>스티커·문구 꾸미기</li>
+          <li><span>4</span>인쇄 · QR로 받기</li>
+        </ol>
+        <div id="at-count" class="at-count hidden">오늘 벌써 <b id="at-count-n">0</b>팀이 찍었어요! 🎉</div>
+        <div class="at-cta">👆 화면을 터치하면 시작!</div>
+        <div class="at-hint">키보드: 아무 키나 누르세요</div>
+      </div>
+      <div class="at-right">
+        <div class="at-strip" id="at-strip">
+          <div class="at-strip-title">행복네컷</div>
+          <div class="at-slot"><div class="at-face"></div><div class="at-view">📷</div><div class="at-cd"></div><div class="at-flash"></div></div>
+          <div class="at-slot"><div class="at-face"></div><div class="at-view">📷</div><div class="at-cd"></div><div class="at-flash"></div></div>
+          <div class="at-slot"><div class="at-face"></div><div class="at-view">📷</div><div class="at-cd"></div><div class="at-flash"></div></div>
+          <div class="at-slot"><div class="at-face"></div><div class="at-view">📷</div><div class="at-cd"></div><div class="at-flash"></div></div>
+          <div class="at-date" id="at-date"></div>
+          <div class="at-sticker s1">💖</div>
+          <div class="at-sticker s2">✨</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-shell" class="w-full h-full max-w-[500px] bg-white flex flex-col shadow-2xl relative overflow-hidden">
 
     <header class="bg-white p-3 shadow-sm flex justify-center items-center z-10 shrink-0 h-14 border-b relative">
       <!-- ✅ V3.50 (A6): 제목을 3초간 길게 누르면 관리자 설정이 열림 -->
       <div id="app-title" class="flex items-center gap-2">
         <i data-lucide="camera" class="text-pink-500 w-6 h-6"></i>
-        <h1 class="text-xl font-jua text-pink-600">행복네컷 <span class="text-xs text-gray-400 font-normal">V3.70</span></h1>
+        <h1 class="text-xl font-jua text-pink-600">행복네컷 <span class="text-xs text-gray-400 font-normal">V3.80</span></h1>
       </div>
       <!-- ✅ V3.50 (A6): 전체화면 버튼 (지원하지 않는 기기에서는 숨김) -->
       <button id="btn-fullscreen" onclick="toggleFullscreen()" title="전체화면"
@@ -325,6 +433,13 @@
             준비 완료!
           </button>
 
+          <!-- ✅ V3.80: 일시 정지 화면 -->
+          <div id="pause-overlay" class="hidden pause-overlay">
+            <div class="pause-title">⏸ 잠깐 멈췄어요</div>
+            <button class="pause-resume" onclick="resumeShooting()">▶ 계속 찍기</button>
+            <div class="pause-hint">이번 사진은 처음부터 다시 세어요<br>(키보드: 스페이스바)</div>
+          </div>
+
           <!-- ✅ V3.60 (A3) -->
           <div id="retake-label" class="hidden absolute top-3 left-3 bg-pink-500/90 text-white px-3 py-2 rounded-full font-jua text-base z-10">한 장 다시 찍기</div>
           <div class="absolute top-3 right-3 bg-black/50 text-white px-4 py-2 rounded-full font-mono text-lg z-10">
@@ -332,9 +447,11 @@
           </div>
         </div>
 
-        <div class="w-full max-w-[460px] mt-3">
+        <div class="w-full max-w-[460px] mt-3 flex gap-3">
+          <!-- ✅ V3.80: 촬영 중에만 보임 -->
+          <button id="btn-pause" onclick="togglePauseShooting()" class="hidden pause-btn">⏸ 일시 정지</button>
           <button onclick="cancelCamera()"
-                  class="w-full bg-gray-400 text-white py-4 rounded-xl font-jua text-2xl shadow active:scale-95 transition">
+                  class="flex-1 bg-gray-400 text-white py-4 rounded-xl font-jua text-2xl shadow active:scale-95 transition">
             촬영 취소
           </button>
         </div>
@@ -609,6 +726,18 @@
             <div class="color-grid mb-4" id="body-solid10-grid"></div>
           </div>
 
+          <!-- ✅ V3.80: 프레임 색깔 -->
+          <div id="color-palette-frame" class="hidden">
+            <div class="color-section-title">추천 프레임 색</div>
+            <div class="color-grid mb-4" id="frame-preset-grid"></div>
+          </div>
+
+          <!-- ✅ V3.80: 최근에 직접 고른 색 (프레임·제목·문구 공통) -->
+          <div id="color-recent-box" class="hidden">
+            <div class="color-section-title">최근에 고른 색</div>
+            <div class="color-grid mb-4" id="recent-color-grid"></div>
+          </div>
+
           <div class="flex items-center justify-between gap-3">
             <!-- ✅ V3.49 (E8): Safari 호환 - 투명 input을 버튼 위에 직접 겹쳐 사용자가 input을 직접 탭하도록 함 -->
             <label class="relative flex-1 bg-pink-500 text-white font-jua py-2 rounded-xl shadow active:scale-95 flex items-center justify-center gap-2 cursor-pointer overflow-hidden">
@@ -622,7 +751,7 @@
           </div>
 
           <p class="text-[11px] text-gray-400 mt-3 leading-snug">
-            추천색을 누르거나 “원하는 색상”에서 고르면 바로 적용돼요.
+            추천색을 누르거나 “원하는 색상”에서 마음에 드는 색을 고르면 바로 적용돼요.
           </p>
         </div>
       </div>
@@ -741,6 +870,31 @@
             </select>
           </div>
 
+          <!-- ✅ V3.80 -->
+          <div class="text-pink-600 font-jua mt-4">대기 화면 (체험 부스용)</div>
+          <div class="admin-row">
+            <div class="admin-label">대기 화면 사용<div class="admin-sub">큰 시작 화면 + 데모 애니메이션, 터치하면 바로 촬영</div></div>
+            <input id="adm-attract" type="checkbox" class="w-5 h-5 accent-pink-500" onchange="onAdminChange()">
+          </div>
+          <div class="admin-row">
+            <div class="admin-label">나타나는 시간<div class="admin-sub">시작 화면에서 입력이 없을 때</div></div>
+            <select id="adm-attract-sec" class="font-selector white-field" onchange="onAdminChange()">
+              <option value="10">10초</option><option value="20">20초</option><option value="30">30초</option><option value="60">1분</option><option value="120">2분</option>
+            </select>
+          </div>
+          <div class="admin-row">
+            <div class="admin-label">"오늘 N팀" 표시<div class="admin-sub">오늘 결과 화면까지 완성한 횟수: <b id="adm-stats-n">0</b> <button class="pill-mini" onclick="resetTodayStats()">0으로</button></div></div>
+            <input id="adm-attract-count" type="checkbox" class="w-5 h-5 accent-pink-500" onchange="onAdminChange()">
+          </div>
+          <div class="admin-row">
+            <div class="admin-label">큰 화면에 맞춰 키우기<div class="admin-sub">가로 모니터에서 앱 전체를 화면 높이에 맞게 확대</div></div>
+            <input id="adm-big-screen" type="checkbox" class="w-5 h-5 accent-pink-500" onchange="onAdminChange()">
+          </div>
+          <div class="admin-row">
+            <div class="admin-label">대기 화면 미리 보기</div>
+            <button class="pill-mini" onclick="closeAdmin(); showAttract();">보기</button>
+          </div>
+
           <div class="flex gap-2 mt-4">
             <button class="flex-1 bg-gray-100 text-gray-700 font-jua py-2 rounded-xl active:scale-95" onclick="resetAdminSettings()">기본값으로</button>
             <button class="flex-1 bg-pink-500 text-white font-jua py-2 rounded-xl active:scale-95" onclick="closeAdmin()">완료</button>
@@ -759,7 +913,7 @@
   // =========================================================
   // ✅ Version control
   // =========================================================
-  const APP_VERSION = "V3.70";
+  const APP_VERSION = "V3.80";
 
   // =========================================================
   // ✅ Handle sizes
@@ -1174,8 +1328,7 @@
   function defaultBodyFontSize(){ return Math.round(56 * SF()); }
 
   function defaultTitleColorForFrame(){
-    const isDark = ['#000000','#1f2937','#4b5563'].includes(state.frameStyle);
-    return isDark ? '#ffffff' : '#ec4899';
+    return isDarkColor(state.frameStyle) ? '#ffffff' : '#ec4899';   // ✅ V3.80
   }
 
   function getAllTextItems(){
@@ -1579,6 +1732,7 @@
   }
 
   function stopAllSounds(){
+    state._soundToken = (state._soundToken || 0) + 1;   // ✅ V3.80: 기다리던 소리도 재생하지 않음
     state._audioCache.forEach(a => {
       try{ a.pause(); a.currentTime = 0; }catch(_){}
     });
@@ -1605,6 +1759,7 @@
 
   async function playSoundAwaitEnd(src){
     if(!state.soundEnabled) return;
+    const token = state._soundToken || 0;   // ✅ V3.80
 
     const audio = getAudio(src);
     try{ audio.pause(); audio.currentTime = 0; }catch(_){}
@@ -1613,6 +1768,8 @@
     if(audio.readyState < 3){
       await waitAudioEvent(audio, ['canplay','canplaythrough'], 1200);
     }
+
+    if(token !== (state._soundToken || 0)) return;   // 그 사이 일시 정지·취소됨
 
     try{
       await audio.play();
@@ -1667,6 +1824,7 @@
     document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
     applyLayoutUI();   // ✅ V3.60 (A5)
     document.getElementById(stepId).classList.remove('hidden');
+    fitPreviewWrappers();   // ✅ V3.71: 보이게 된 뒤 크기 맞춤
     lucide.createIcons();
 
     if(stepId === 'step-decorate-frame'){
@@ -1755,6 +1913,7 @@
 
     // ✅ V3.60 (A3): 한 장 다시 찍기일 때는 사진·꾸미기를 그대로 둠
     if(!isRetaking()){
+      state._sessionCounted = false;   // ✅ V3.80
       state.photos = [];
       state.photoSources = [];
       state.selectedIndices = [];
@@ -1815,6 +1974,7 @@
     state._captureSession++;          // 진행 중인 카운트다운 루프 무효화
     state._countdownRunning = false;
     state.isCapturing = false;
+    clearShootPause();   // ✅ V3.80
     stopAllSounds();
     hideCountdownOverlay();
     await stopStream();
@@ -1883,6 +2043,7 @@
       btn.classList.add('hidden');
       btn.style.display = 'none';
     }
+    syncPauseUI();   // ✅ V3.80: 일시 정지 버튼 표시
 
     const video = document.getElementById('video-feed');
     const canvas = document.getElementById('capture-canvas');
@@ -1917,8 +2078,18 @@
         if(!alive()) return;
         document.getElementById('shot-count').innerText = i;
 
-        for(const step of sequence){
+        // ✅ V3.80: 일시 정지하면 이번 사진의 카운트다운을 처음(Ready!)부터 다시
+        let k = 0;
+        while(k < sequence.length){
           if(!alive()) return;
+          if(state._shootPaused){
+            overlay.classList.add('hidden');
+            await waitUntilResumed();
+            if(!alive()) return;
+            k = 0;
+            continue;
+          }
+          const step = sequence[k];
 
           overlay.classList.remove('hidden');
           countdownText.innerText = step.label;
@@ -1945,8 +2116,11 @@
             }
           }
 
-          await playStep(step);
+          await Promise.race([playStep(step), pauseSignal()]);
           container.classList.remove('flash-effect');
+          // 찍은 직후 멈춘 경우에는 다음 사진부터 (같은 사진을 두 번 찍지 않도록)
+          if(state._shootPaused && !step.shot) continue;
+          k++;
         }
       }
 
@@ -1963,9 +2137,85 @@
 
     } finally {
       // 이후에 시작된 새 세션의 상태는 건드리지 않음
-      if(session === state._captureSession) state._countdownRunning = false;
+      if(session === state._captureSession){
+        state._countdownRunning = false;
+        clearShootPause();
+      }
       syncShootOptionUI();
+      syncPauseUI();
     }
+  }
+
+  // =========================================================
+  // ✅ V3.80: 촬영 일시 정지
+  //   - 촬영 중 "일시 정지" 버튼 또는 스페이스바
+  //   - 다시 시작하면 이번 사진의 카운트다운을 처음부터 다시 셈 (자세를 다시 잡을 수 있게)
+  //   - 이미 찍은 사진은 그대로 유지
+  // =========================================================
+  let _pauseWaiters = [];
+  let _pauseSignal = null;
+
+  function pauseSignal(){
+    if(!_pauseSignal){
+      let resolve;
+      const promise = new Promise(r => resolve = r);
+      _pauseSignal = { promise, resolve };
+    }
+    return _pauseSignal.promise;
+  }
+
+  function waitUntilResumed(){
+    if(!state._shootPaused) return Promise.resolve();
+    return new Promise(r => _pauseWaiters.push(r));
+  }
+
+  function releasePauseWaiters(){
+    const w = _pauseWaiters; _pauseWaiters = [];
+    w.forEach(r => r());
+  }
+
+  function pauseShooting(){
+    if(!state._countdownRunning || state._shootPaused) return;
+    state._shootPaused = true;
+    stopAllSounds();
+    if(_pauseSignal){ _pauseSignal.resolve(); _pauseSignal = null; }
+    const c = document.getElementById('camera-container');
+    if(c) c.classList.remove('flash-effect');
+    syncPauseUI();
+    resetIdleTimer();
+  }
+
+  function resumeShooting(){
+    if(!state._shootPaused) return;
+    state._shootPaused = false;
+    _pauseSignal = null;
+    preloadAndUnlockSounds();   // 버튼을 누른 직후라 소리 재생 가능
+    syncPauseUI();
+    releasePauseWaiters();
+  }
+
+  function togglePauseShooting(){
+    state._shootPaused ? resumeShooting() : pauseShooting();
+  }
+
+  function clearShootPause(){
+    state._shootPaused = false;
+    _pauseSignal = null;
+    releasePauseWaiters();
+    syncPauseUI();
+  }
+
+  function syncPauseUI(){
+    const running = !!state._countdownRunning;
+    const paused = !!state._shootPaused;
+    const btn = document.getElementById('btn-pause');
+    const ov = document.getElementById('pause-overlay');
+    if(btn){
+      btn.classList.toggle('hidden', !running);
+      btn.innerHTML = paused ? '▶ 계속 찍기' : '⏸ 일시 정지';
+      btn.classList.toggle('is-paused', paused);
+    }
+    if(ov) ov.classList.toggle('hidden', !paused);
   }
 
   // =========================================================
@@ -2157,8 +2407,7 @@
       ctx.restore();
     }
 
-    const isDark = ['#000000','#1f2937','#4b5563'].includes(state.frameStyle);
-    ctx.fillStyle = isDark ? '#aaaaaa' : '#555555';
+    ctx.fillStyle = isDarkColor(state.frameStyle) ? '#d1d5db' : '#555555';   // ✅ V3.80
     ctx.font = fontSpec(Math.round(DATE_FONT_SIZE * layout.sizeFactor), DATE_FONT_FAMILY);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
@@ -2484,6 +2733,38 @@
     const land = L().landscape;
     document.querySelectorAll('.canvas-wrapper').forEach(w => w.classList.toggle('landscape', land));
     document.querySelectorAll('.decorate-row').forEach(r => r.classList.toggle('landscape', land));
+    fitPreviewWrappers();
+  }
+
+  // =========================================================
+  // ✅ V3.71: 미리보기를 영역 안에 "통째로" 맞춤
+  //   - 휴대폰처럼 좁은 화면에서 2x6 띠의 좌우가 잘려
+  //     여백과 사진 꼭짓점 표시가 안 보이던 문제 해결
+  //   - 출력물과 같은 비율·여백 그대로 보이게 가로·세로 중 작은 쪽에 맞춤
+  // =========================================================
+  function fitOneWrapper(pc){
+    const w = pc.querySelector('.canvas-wrapper');
+    if(!w) return;
+    // ✅ V3.80: 확대(zoom) 중에도 맞도록 화면 좌표가 아닌 CSS 크기(clientWidth/Height) 사용
+    const rw = pc.clientWidth, rh = pc.clientHeight;
+    if(!rw || !rh) return;                     // 숨겨진 화면
+    const a = L().canvasW / L().canvasH;
+    const width = Math.floor(Math.min(rw, rh * a));
+    w.style.width = width + 'px';
+    w.style.height = Math.floor(width / a) + 'px';
+    w.style.aspectRatio = 'auto';
+  }
+
+  function fitPreviewWrappers(){
+    document.querySelectorAll('.preview-container').forEach(fitOneWrapper);
+  }
+
+  function initPreviewFit(){
+    if(window.ResizeObserver){
+      const ro = new ResizeObserver(entries => entries.forEach(en => fitOneWrapper(en.target)));
+      document.querySelectorAll('.preview-container').forEach(pc => ro.observe(pc));
+    }
+    window.addEventListener('resize', fitPreviewWrappers);
   }
 
   // =========================================================
@@ -2576,18 +2857,79 @@
     grid.innerHTML = '';
     colors.forEach(color => {
       const dot = document.createElement('div');
-      dot.className = `color-dot ${state.frameStyle === color ? 'active' : ''}`;
+      dot.className = `color-dot ${String(state.frameStyle).toLowerCase() === color.toLowerCase() ? 'active' : ''}`;
       dot.style.backgroundColor = color;
-      dot.onclick = () => {
-        state.frameStyle = color;
-        document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-        dot.classList.add('active');
-        redrawEditor();
-        syncTitleColorButton();
-        if(isStepVisible('step-decorate-text')) renderTexts();
-      };
+      dot.onclick = () => setFrameColor(color);   // ✅ V3.80
       grid.appendChild(dot);
     });
+
+    // ✅ V3.80: 원하는 색 고르기 (무지개 동그라미) → 추천색 + 색상 선택 창
+    const custom = !colors.map(c => c.toLowerCase()).includes(String(state.frameStyle).toLowerCase());
+    const dot = document.createElement('div');
+    dot.className = 'color-dot custom-color-dot' + (custom ? ' active' : '');
+    dot.title = '원하는 색 고르기';
+    const inner = document.createElement('span');
+    if(custom){ inner.style.backgroundColor = state.frameStyle; inner.textContent = ''; }
+    else inner.textContent = '+';
+    dot.appendChild(inner);
+    dot.onclick = () => openColorPicker('frame');
+    grid.prepend(dot);   // 맨 앞에 두어 바로 보이게
+
+    let hint = document.getElementById('frame-color-hint');
+    if(!hint){
+      hint = document.createElement('p');
+      hint.id = 'frame-color-hint';
+      hint.className = 'frame-color-hint';
+      grid.parentNode.insertBefore(hint, grid.nextSibling);
+    }
+    hint.textContent = '첫 번째 무지개 동그라미: 원하는 색 고르기';
+  }
+
+  // ✅ V3.80: 배경색이 어두운지 (직접 고른 색도 판단)
+  function isDarkColor(hex){
+    const m = String(hex || '').trim().match(/^#?([0-9a-f]{6}|[0-9a-f]{3})$/i);
+    if(!m) return false;
+    let h = m[1];
+    if(h.length === 3) h = h.split('').map(c => c + c).join('');
+    const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+    return (0.299*r + 0.587*g + 0.114*b) < 128;
+  }
+
+  function setFrameColor(col){
+    state.frameStyle = col;
+    initColorPalette();
+    redrawEditor();
+    syncTitleColorButton();
+    if(isStepVisible('step-decorate-text')) renderTexts();
+  }
+
+  // 최근에 직접 고른 색 (이 기기에서 최대 10개)
+  const RECENT_COLORS_KEY = 'happy4cut.recentColors.v1';
+  function getRecentColors(){
+    try{
+      const a = JSON.parse(localStorage.getItem(RECENT_COLORS_KEY) || '[]');
+      return Array.isArray(a) ? a.filter(c => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 10) : [];
+    }catch(_){ return []; }
+  }
+  function rememberColor(col){
+    if(!/^#[0-9a-f]{6}$/i.test(col)) return;
+    const a = [col.toLowerCase(), ...getRecentColors().filter(c => c.toLowerCase() !== col.toLowerCase())].slice(0, 10);
+    try{ localStorage.setItem(RECENT_COLORS_KEY, JSON.stringify(a)); }catch(_){}
+  }
+  function renderRecentColors(){
+    const box = document.getElementById('color-recent-box');
+    const grid = document.getElementById('recent-color-grid');
+    if(!box || !grid) return;
+    const list = getRecentColors();
+    grid.innerHTML = '';
+    list.forEach(col => {
+      const b = document.createElement('button');
+      b.className = 'round-color-btn';
+      b.style.backgroundColor = col;
+      b.onclick = () => applyPickedColor(col);
+      grid.appendChild(b);
+    });
+    box.classList.toggle('hidden', list.length === 0);
   }
 
   // =========================================================
@@ -3105,6 +3447,31 @@
 
     if(!modal || !title || !native || !boxTitle || !boxBody || !gridTitle || !gridBodyP || !gridBodyS) return;
 
+    // ✅ V3.80: 프레임 색깔
+    const boxFrame = document.getElementById('color-palette-frame');
+    if(boxFrame) boxFrame.classList.toggle('hidden', target !== 'frame');
+    renderRecentColors();
+    if(target === 'frame'){
+      boxTitle.classList.add('hidden');
+      boxBody.classList.add('hidden');
+      title.textContent = '프레임 색깔';
+      const g = document.getElementById('frame-preset-grid');
+      if(g){
+        g.innerHTML = '';
+        colors.forEach(col => {
+          const b = document.createElement('button');
+          b.className = 'round-color-btn';
+          b.style.backgroundColor = col;
+          b.onclick = () => applyPickedColor(col);
+          g.appendChild(b);
+        });
+      }
+      native.value = /^#[0-9a-f]{6}$/i.test(state.frameStyle) ? state.frameStyle : '#ffffff';
+      syncNativeSwatch();
+      modal.classList.remove('hidden');
+      return;
+    }
+
     if(target === 'title'){
       boxTitle.classList.remove('hidden');
       boxBody.classList.add('hidden');
@@ -3163,6 +3530,11 @@
   }
 
   function applyPickedColor(col){
+    if(state._colorTarget === 'frame'){   // ✅ V3.80
+      setFrameColor(col);
+      closeColorPicker();
+      return;
+    }
     if(state._colorTarget === 'title'){
       state.titleText.color = col;
       syncTitleColorButton();
@@ -3197,13 +3569,14 @@
     native.addEventListener('input', syncNativeSwatch);
     // 색상 창에서 고르기를 마치면 바로 적용
     native.addEventListener('change', () => {
-      if(state._colorTarget) applyPickedColor(native.value);
+      if(state._colorTarget){ rememberColor(native.value); applyPickedColor(native.value); }
     });
   }
 
   function applyNativeColor(){
     const native = document.getElementById('native-color');
     if(!native) return;
+    rememberColor(native.value);   // ✅ V3.80
     applyPickedColor(native.value);
   }
 
@@ -3279,6 +3652,7 @@
     await buildFinalCanvases();
     await prepareResultFiles();   // ✅ V3.50 (I3/A1)
     showStep('step-result');
+    countFinishedSession();   // ✅ V3.80: 오늘 참여 팀 수
     if(settings.shareAuto && shareAvailable()){ setShareLocalKind(null); startShare(); }
   }
 
@@ -3510,6 +3884,34 @@
     return '사진을 올리지 못했어요. (' + msg + ')';
   }
 
+  // =========================================================
+  // ✅ V3.72: "인터넷에 연결할 수 없어요"의 진짜 원인 찾기
+  //   - 브라우저는 Apps Script가 로그인 화면으로 돌려보내도(액세스: 나만)
+  //     인터넷 끊김과 똑같은 오류(TypeError)를 냄 → 응답을 안 읽는 방식(no-cors)으로 한 번 더 확인
+  //     · 이 요청은 성공 → 인터넷은 됨, 배포 "액세스 권한"이 문제
+  //     · 이 요청도 실패 → 인터넷/방화벽 문제
+  // =========================================================
+  async function diagnoseShareNetworkError(url){
+    url = String(url || '').trim();
+    if(navigator.onLine === false) return '이 기기가 인터넷에 연결되어 있지 않아요. 와이파이를 확인해 주세요.';
+    if(/\/dev(\?|$)/.test(url)) return '"…/dev"로 끝나는 주소는 테스트용이에요.\n배포 후 나오는 "…/exec" 주소를 넣어 주세요.';
+    if(!/^https:\/\/script\.google\.com\/(a\/[^/]+\/)?macros\/s\/[^/]+\/exec/.test(url)){
+      return '웹 앱 주소가 올바르지 않아요.\n"https://script.google.com/macros/s/…/exec" 형태인지 확인해 주세요.';
+    }
+    try{
+      await fetch(url + (url.includes('?') ? '&' : '?') + 'ping=1', { mode: 'no-cors', cache: 'no-store' });
+      return 'Apps Script까지는 연결되지만 사진을 받아 주지 않아요.\n'
+           + 'Apps Script → 배포 → 배포 관리 → 연필 → "액세스 권한이 있는 사용자: 모든 사용자", 버전: "새 버전"으로 다시 배포해 주세요.';
+    }catch(_){
+      return '인터넷에 연결할 수 없어요.\n(학교 방화벽이 script.google.com을 막고 있을 수도 있어요)';
+    }
+  }
+
+  async function shareErrorMessage(e, url){
+    if(e && e.name === 'TypeError') return diagnoseShareNetworkError(url);
+    return friendlyShareError(e);
+  }
+
   // QR 코드 그리기 (vendor/qrcode.js, 인터넷 불필요)
   function drawQR(canvas, text){
     const qr = qrcode(0, 'M');
@@ -3612,7 +4014,10 @@
     }catch(e){
       if(session !== state._shareSession) return;
       state._share = null;
-      setShareView('error', friendlyShareError(e));
+      setShareView('loading', '원인을 확인하는 중이에요…');
+      const msg = await shareErrorMessage(e, settings.shareUrl);   // ✅ V3.72
+      if(session !== state._shareSession) return;
+      setShareView('error', msg);
     }finally{
       clearTimeout(timer);
     }
@@ -3627,6 +4032,7 @@
       if(!out) return;
       out.textContent = msg;
       out.className = 'text-xs mt-1 ' + (ok ? 'text-green-600' : 'text-red-500');
+      out.style.whiteSpace = 'pre-line';
     };
     if(!/^https:\/\//.test(url)){ show('https:// 로 시작하는 웹 앱 주소를 입력해 주세요.', false); return; }
 
@@ -3636,10 +4042,10 @@
       const data = await res.json();
       if(data && data.error === 'EMPTY_IMAGE') show('연결 성공! 공유 키도 맞아요.', true);
       else if(data && data.error === 'UNAUTHORIZED') show('연결은 됐지만 공유 키가 달라요.', false);
-      else if(data && data.error === 'SERVER_KEY_NOT_SET') show('Apps Script의 SHARED_KEY를 바꾼 뒤 다시 배포해 주세요.', false);
+      else if(data && data.error === 'SERVER_KEY_NOT_SET') show('Apps Script가 공유 키를 "아직 안 바꾼 상태"로 보고 있어요.\nCode.gs 안의 비교 줄까지 바뀌지 않았는지 확인하고 새 버전으로 다시 배포해 주세요.', false);
       else show('응답이 올바르지 않아요: ' + JSON.stringify(data).slice(0, 80), false);
     }catch(e){
-      show(friendlyShareError(e), false);
+      show(await shareErrorMessage(e, url), false);   // ✅ V3.72
     }
   }
 
@@ -3655,6 +4061,10 @@
     showSave: true,        // 결과 화면 저장 버튼
     idleResultSec: 60,     // 결과 화면 자동 복귀(초), 0 = 끔
     idleOtherSec: 180,     // 그 외 화면 자동 복귀(초), 0 = 끔
+    attractEnabled: true,  // ✅ V3.80: 대기 화면 사용
+    attractSec: 20,        // ✅ V3.80: 시작 화면에서 입력이 없을 때 대기 화면까지(초)
+    attractShowCount: true,// ✅ V3.80: 대기 화면에 "오늘 N팀" 표시
+    bigScreen: true,       // ✅ V3.80: 큰 화면(가로 모니터)에서 앱 확대
     // ✅ V3.60
     defaultLayout: 'strip',// 기본 레이아웃
     showShare: true,       // "QR로 사진 받기" 버튼 (주소가 있어야 표시)
@@ -3671,6 +4081,10 @@
     s.shots         = pick(s.shots, [4,6,8], DEFAULT_SETTINGS.shots);
     s.idleResultSec = pick(s.idleResultSec, [0,30,60,90,120], DEFAULT_SETTINGS.idleResultSec);
     s.idleOtherSec  = pick(s.idleOtherSec, [0,120,180,300], DEFAULT_SETTINGS.idleOtherSec);
+    s.attractEnabled   = !!s.attractEnabled;
+    s.attractSec       = pick(s.attractSec, [10,20,30,60,120], DEFAULT_SETTINGS.attractSec);
+    s.attractShowCount = !!s.attractShowCount;
+    s.bigScreen        = !!s.bigScreen;
     s.showShootOptions = !!s.showShootOptions;
     s.showPrint = !!s.showPrint;
     s.showSave  = !!s.showSave;
@@ -3725,6 +4139,7 @@
   }
 
   function applySettingsToUI(){
+    if(typeof applyBigScreen === 'function') applyBigScreen();   // ✅ V3.80
     const shootBox = document.getElementById('user-shoot-settings');
     if(shootBox) shootBox.classList.toggle('hidden', !settings.showShootOptions);
 
@@ -3751,6 +4166,12 @@
     chk('adm-show-save', settings.showSave);
     set('adm-idle-result', settings.idleResultSec);
     set('adm-idle-other', settings.idleOtherSec);
+    chk('adm-attract', settings.attractEnabled);
+    set('adm-attract-sec', settings.attractSec);
+    chk('adm-attract-count', settings.attractShowCount);
+    chk('adm-big-screen', settings.bigScreen);
+    const sn = document.getElementById('adm-stats-n');
+    if(sn) sn.textContent = String(loadStats().count);
     set('adm-layout', settings.defaultLayout);
     chk('adm-show-share', settings.showShare);
     chk('adm-share-auto', settings.shareAuto);
@@ -3760,6 +4181,7 @@
   }
 
   function openAdmin(){
+    hideAttract();   // ✅ V3.80
     fillAdminForm();
     document.getElementById('admin-modal').classList.remove('hidden');
     lucide.createIcons();
@@ -3787,6 +4209,10 @@
       showSave: chk('adm-show-save'),
       idleResultSec: val('adm-idle-result'),
       idleOtherSec: val('adm-idle-other'),
+      attractEnabled: chk('adm-attract'),
+      attractSec: val('adm-attract-sec'),
+      attractShowCount: chk('adm-attract-count'),
+      bigScreen: chk('adm-big-screen'),
       defaultLayout: val('adm-layout'),
       showShare: chk('adm-show-share'),
       shareAuto: chk('adm-share-auto'),
@@ -3856,6 +4282,192 @@
   }
 
   // =========================================================
+  // ✅ V3.80: 대기 화면 (Attract mode)
+  //   - 처음 켤 때, 시작 화면에서 일정 시간 입력이 없을 때, 자동 복귀했을 때 표시
+  //   - 화면 터치/클릭/아무 키 → 바로 촬영 시작
+  //   - 오른쪽 데모: 3·2·1 카운트다운 → 찰칵 → 네 컷이 차례로 채워지는 애니메이션
+  // =========================================================
+  const STATS_KEY = 'happy4cut.stats.v1';
+  const DEMO_FACE_SETS = [
+    ['😄','😎','🤪','🥰'],
+    ['🥳','😆','😜','🤩'],
+    ['🐶','🐱','🐰','🐻'],
+    ['✌️','🤗','😝','💯']
+  ];
+  const DEMO_BG = ['#ffd1dc','#bde0fe','#fff1b8','#b7e4c7','#e0bbe4','#ffd8b1'];
+  let _attractGen = 0;
+  let _lastActivityAt = Date.now();
+
+  function todayKey(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function loadStats(){
+    try{
+      const st = JSON.parse(localStorage.getItem(STATS_KEY) || 'null');
+      if(st && st.date === todayKey()) return st;
+    }catch(_){}
+    return { date: todayKey(), count: 0 };
+  }
+
+  // 결과 화면까지 간 촬영 1회 = 1팀 (같은 촬영을 여러 번 완성해도 한 번만)
+  function countFinishedSession(){
+    if(state._sessionCounted) return;
+    state._sessionCounted = true;
+    const st = loadStats();
+    st.count++;
+    try{ localStorage.setItem(STATS_KEY, JSON.stringify(st)); }catch(_){}
+  }
+
+  function resetTodayStats(){
+    try{ localStorage.removeItem(STATS_KEY); }catch(_){}
+    const out = document.getElementById('adm-stats-n');
+    if(out) out.textContent = '0';
+  }
+
+  function isAttractVisible(){
+    const a = document.getElementById('attract');
+    return !!a && !a.classList.contains('hidden');
+  }
+
+  function buildFloaties(){
+    const box = document.getElementById('at-floaties');
+    if(!box || box.childElementCount) return;
+    const em = ['💖','✨','⭐','🎀','🌈','🎈','📸','🌸','💫','🍀','🎉','💕'];
+    for(let i=0;i<16;i++){
+      const sp = document.createElement('span');
+      sp.className = 'at-floaty';
+      sp.textContent = em[i % em.length];
+      sp.style.left = (Math.random()*96) + 'vw';
+      sp.style.fontSize = (4 + Math.random()*5) + 'vmin';
+      sp.style.animationDuration = (10 + Math.random()*12) + 's';
+      sp.style.animationDelay = (-Math.random()*20) + 's';
+      box.appendChild(sp);
+    }
+  }
+
+  function showAttract(){
+    if(!settings.attractEnabled) return;
+    if(isAdminOpen() || isAttractVisible()) return;
+    const a = document.getElementById('attract');
+    if(!a) return;
+    buildFloaties();
+    const st = loadStats();
+    const cnt = document.getElementById('at-count');
+    const n = document.getElementById('at-count-n');
+    if(n) n.textContent = String(st.count);
+    if(cnt) cnt.classList.toggle('hidden', !(settings.attractShowCount && st.count > 0));
+    const d = new Date();
+    const dt = document.getElementById('at-date');
+    if(dt) dt.textContent = `${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}.`;
+    a.classList.remove('hidden');
+    runAttractDemo();
+  }
+
+  function hideAttract(){
+    const a = document.getElementById('attract');
+    if(a) a.classList.add('hidden');
+    _attractGen++;          // 데모 애니메이션 중지
+    _lastActivityAt = Date.now();
+  }
+
+  function attractStart(){
+    hideAttract();
+    resetIdleTimer();
+    if(isStepVisible('step-start')) startCamera();   // 클릭 직후라 소리도 바로 재생 가능
+  }
+
+  async function runAttractDemo(){
+    const gen = ++_attractGen;
+    const alive = () => gen === _attractGen && isAttractVisible();
+    const strip = document.getElementById('at-strip');
+    const slots = strip ? [...strip.querySelectorAll('.at-slot')] : [];
+    let round = 0;
+    while(alive()){
+      const faces = DEMO_FACE_SETS[round % DEMO_FACE_SETS.length];
+      strip.classList.remove('decorated');
+      slots.forEach((sl, i) => {
+        sl.classList.remove('filled','live');
+        sl.style.background = '#e5e7eb';
+        sl.querySelector('.at-face').textContent = faces[i];
+        sl.querySelector('.at-cd').textContent = '';
+      });
+      await waitMs(700); if(!alive()) return;
+
+      for(let i=0;i<slots.length;i++){
+        const sl = slots[i];
+        const cd = sl.querySelector('.at-cd');
+        sl.classList.add('live');
+        for(const t of ['3','2','1']){
+          cd.textContent = t;
+          cd.classList.remove('pop'); void cd.offsetWidth; cd.classList.add('pop');
+          await waitMs(520); if(!alive()) return;
+        }
+        cd.textContent = '';
+        const fl = sl.querySelector('.at-flash');
+        fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on');
+        sl.classList.remove('live');
+        sl.style.background = DEMO_BG[(i + round) % DEMO_BG.length];
+        sl.classList.add('filled');
+        await waitMs(450); if(!alive()) return;
+      }
+      await waitMs(500); if(!alive()) return;
+      strip.classList.add('decorated');
+      await waitMs(2600); if(!alive()) return;
+      round++;
+    }
+  }
+
+  function maybeShowAttract(){
+    if(!settings.attractEnabled || isAttractVisible()) return;
+    if(!isStepVisible('step-start') || isAdminOpen()) return;
+    const sh = document.getElementById('share-modal');
+    if(sh && !sh.classList.contains('hidden')) return;
+    if(Date.now() - _lastActivityAt >= settings.attractSec * 1000) showAttract();
+  }
+
+  // =========================================================
+  // ✅ V3.80: 큰 화면 맞춤 (16인치 외부 모니터 등)
+  //   - 세로 높이에 맞춰 앱 전체를 확대 (최대 1.8배), 좁은 화면(휴대폰)에서는 그대로
+  // =========================================================
+  const BIG_BASE_H = 820;   // 이 높이를 기준으로 확대
+  function applyBigScreen(){
+    const shell = document.getElementById('app-shell');
+    if(!shell) return;
+    let z = 1;
+    if(settings.bigScreen && window.innerWidth > window.innerHeight){
+      z = Math.min(1.8, window.innerHeight / BIG_BASE_H, window.innerWidth / 520);
+      if(z < 1.05) z = 1;
+    }
+    z = Math.round(z * 100) / 100;
+    if(z === 1){
+      shell.style.zoom = '';
+      shell.style.height = '';
+    }else{
+      shell.style.zoom = String(z);
+      shell.style.height = (window.innerHeight / z) + 'px';
+    }
+    fitPreviewWrappers();
+  }
+
+  function initAttract(){
+    const a = document.getElementById('attract');
+    if(!a) return;
+    // pointerdown이 아니라 click: 손을 뗀 뒤 아래 화면의 버튼이 같이 눌리지 않도록
+    a.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); attractStart(); });
+    document.addEventListener('keydown', (e) => {
+      if(!isAttractVisible()) return;
+      if(e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')){ hideAttract(); return; }   // 관리자 설정은 그대로
+      if(e.ctrlKey || e.metaKey || e.altKey) return;
+      if(['Shift','Control','Alt','Meta','CapsLock','Tab','F11','F5','F12'].includes(e.key)) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      attractStart();
+    }, true);
+  }
+
+  // =========================================================
   // ✅ V3.50 (A6): 자동 복귀 (입력이 없으면 처음 화면으로)
   // =========================================================
   const IDLE_WARN_SEC = 10;
@@ -3864,7 +4476,7 @@
   function currentIdleLimitSec(){
     if(isStepVisible('step-start')) return 0;
     if(isAdminOpen()) return 0;
-    if(state._countdownRunning) return 0;   // 촬영 중에는 동작하지 않음
+    if(state._countdownRunning && !state._shootPaused) return 0;   // 촬영 중에는 동작하지 않음 (✅ V3.80: 멈춰 둔 채 떠나면 복귀)
     if(state._printing) return 0;
     if(isSharePending()) return 0;          // ✅ V3.60: 업로드 중에는 기다림
     if(isStepVisible('step-result')) return settings.idleResultSec;
@@ -3885,6 +4497,7 @@
 
   function resetIdleTimer(){
     idleDeadline = 0;   // 다음 확인 때 현재 화면 기준으로 다시 계산
+    _lastActivityAt = Date.now();   // ✅ V3.80: 대기 화면 기준 시각
     hideIdleToast();
   }
 
@@ -3894,9 +4507,11 @@
     state.retakeIndex = null;
     if(state.isCapturing || state._stream) await stopCamera();
     resetToHome();
+    showAttract();   // ✅ V3.80: 아무도 없으면 바로 대기 화면
   }
 
   function checkIdle(){
+    maybeShowAttract();   // ✅ V3.80
     const limit = currentIdleLimitSec();
     if(!limit){
       idleDeadline = 0;
@@ -3926,6 +4541,8 @@
   function resetToHome(){
     state._captureSession++;
     state.isCapturing = false;
+    state._countdownRunning = false;
+    clearShootPause();   // ✅ V3.80
     stopAllSounds();
     clearPhotoImageCache();
     clearPhotoAdjust();   // ✅ V3.70
@@ -4043,6 +4660,10 @@
     resetShootOptionsToDefault();
     applySettingsToUI();
     initAdminLongPress();
+    initPreviewFit();   // ✅ V3.71
+    initAttract();      // ✅ V3.80
+    applyBigScreen();   // ✅ V3.80
+    window.addEventListener('resize', applyBigScreen);
     initIdleWatcher();
     syncFullscreenButton();
     document.addEventListener('fullscreenchange', syncFullscreenButton);
@@ -4050,6 +4671,7 @@
     await setCameraFacing('user', false);
     syncSoundToggleUI();
     showStep('step-start');
+    showAttract();   // ✅ V3.80: 켜자마자 대기 화면
 
     document.addEventListener('keydown', (e) => {
       const key = e.key;
@@ -4062,6 +4684,16 @@
       }
       if(key === 'Escape' && isAdminOpen()){ closeAdmin(); return; }
       if(key === 'Escape'){ closeShareModal(); }
+
+      // ✅ V3.80: 촬영 화면 키보드 (스페이스바: 시작 / 멈춤·계속)
+      if(isStepVisible('step-camera') && (key === ' ' || key === 'Spacebar') && !isTypingTarget(document.activeElement) && !isAdminOpen()){
+        e.preventDefault();
+        try{ document.activeElement && document.activeElement.blur && document.activeElement.blur(); }catch(_){}
+        const ready = document.getElementById('btn-ready');
+        if(state._countdownRunning) togglePauseShooting();
+        else if(ready && !ready.classList.contains('hidden')) startReadyCountdown();
+        return;
+      }
 
       // ✅ (2)(3) 입력 중에는 Backspace/Delete를 절대 가로채지 않음
       const ae = document.activeElement;
