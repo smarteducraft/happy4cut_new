@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>행복네컷 (V3.80)</title>
+  <title>행복네컷 (V3.83)</title>
 
   <!-- ✅ V3.50 (I2): 인터넷 없이 동작하도록 모든 리소스를 로컬(vendor/)에서 불러옴 -->
   <link href="vendor/tailwind.css" rel="stylesheet">
@@ -296,7 +296,7 @@
       <!-- ✅ V3.50 (A6): 제목을 3초간 길게 누르면 관리자 설정이 열림 -->
       <div id="app-title" class="flex items-center gap-2">
         <i data-lucide="camera" class="text-pink-500 w-6 h-6"></i>
-        <h1 class="text-xl font-jua text-pink-600">행복네컷 <span class="text-xs text-gray-400 font-normal">V3.80</span></h1>
+        <h1 class="text-xl font-jua text-pink-600">행복네컷 <span class="text-xs text-gray-400 font-normal">V3.83</span></h1>
       </div>
       <!-- ✅ V3.50 (A6): 전체화면 버튼 (지원하지 않는 기기에서는 숨김) -->
       <button id="btn-fullscreen" onclick="toggleFullscreen()" title="전체화면"
@@ -870,6 +870,26 @@
             </select>
           </div>
 
+          <!-- ✅ V3.83 -->
+          <div class="text-pink-600 font-jua mt-4">인쇄 (캐논 셀피 등)</div>
+          <div class="admin-row">
+            <div class="admin-label">인쇄 용지<div class="admin-sub">셀피 엽서(KP-108IN 등)는 100×148mm</div></div>
+            <select id="adm-print-paper" class="font-selector white-field" onchange="onAdminChange()">
+              <option value="postcard">셀피 엽서 100×148mm</option>
+              <option value="4x6">4×6인치</option>
+            </select>
+          </div>
+          <div class="admin-row">
+            <div class="admin-label">인쇄 확대<div class="admin-sub">가장자리에 얇은 흰 줄이 남을 때만</div></div>
+            <select id="adm-print-bleed" class="font-selector white-field" onchange="onAdminChange()">
+              <option value="0">0% (기본)</option><option value="2">2%</option><option value="4">4%</option>
+            </select>
+          </div>
+          <div class="admin-row">
+            <div class="admin-label">테스트 인쇄<div class="admin-sub">흰 테두리·잘림을 종이로 확인</div></div>
+            <button class="pill-mini" onclick="onAdminChange(); printTestPage();">인쇄</button>
+          </div>
+
           <!-- ✅ V3.80 -->
           <div class="text-pink-600 font-jua mt-4">대기 화면 (체험 부스용)</div>
           <div class="admin-row">
@@ -913,7 +933,7 @@
   // =========================================================
   // ✅ Version control
   // =========================================================
-  const APP_VERSION = "V3.80";
+  const APP_VERSION = "V3.83";
 
   // =========================================================
   // ✅ Handle sizes
@@ -926,17 +946,19 @@
   // ✅ Layout
   // =========================================================
   // ✅ V3.70 (B1): 여백을 줄이고 사진 칸을 키움 (2x6 띠 600x1800 = 300dpi 기준)
-  //   - 사진 칸 420x302 → 520x374 (가로·세로 약 24% ↑, 면적 약 53% ↑)
-  //   - 위쪽 96px: 제목 자리 / 아래쪽: 문구 + 날짜 자리
+  // ✅ V3.82: 인쇄 때 위·아래 가장자리가 잘려 제목·날짜가 반쯤 잘리던 문제
+  //   - 위·아래 약 6mm(70px)는 글자를 두지 않는 "안전 여백"
+  //   - 사진 칸은 촬영 화면과 같은 비율 그대로 조금 줄임: 520x374 → 496x357 (약 4.6% ↓)
+  //   - 위: 안전 여백 + 제목 / 아래: 문구 + 날짜 + 안전 여백
   const FRAME_LAYOUT = {
     canvasW: 600,
     canvasH: 1800,
-    marginX: 40,
-    titleCY: 50,          // 제목 기본 위치(가운데 y)
-    startY: 96,
-    gapY: 12,
+    marginX: 52,          // ✅ V3.82: 40 → 52 (사진 비율 유지하며 세로 길이 줄임)
+    titleCY: 110,         // ✅ V3.82: 50 → 110 (제목 위쪽이 가장자리에서 약 6mm)
+    startY: 158,          // ✅ V3.82: 90 → 158
+    gapY: 10,
     photoAspectH: 0.72,
-    dateBottomPadding: 34,
+    dateBottomPadding: 70,   // ✅ V3.81: 34 → 70 (약 6mm) 인쇄 때 가장자리가 잘려도 날짜가 보이게
     dateTextTopGap: 16
   };
 
@@ -3755,6 +3777,89 @@
   // =========================================================
   const PRINT_LOCK_MS = 5000;
 
+  // =========================================================
+  // ✅ V3.83: 캐논 셀피(CP1500) 인쇄 맞춤
+  //   - 셀피 엽서 용지는 100x148mm (4x6인치 = 101.6x152.4mm보다 조금 작음)
+  //     → 페이지를 4x6으로 보내면 크롬이 종이에 맞춰 줄여서 흰 여백이 생김
+  //   - 그래서 인쇄 페이지 크기를 실제 용지 크기로 지정하고, 사진을 종이에 꽉 채움
+  //   - 인쇄 확대(%): 그래도 가장자리에 아주 얇은 흰 줄이 남을 때 조금 키워서 덮음
+  //     (위·아래 6mm 안전 여백이 있어 4%까지는 제목·날짜가 잘리지 않음)
+  // =========================================================
+  const PRINT_PAPERS = {
+    postcard: { w: 100,   h: 148,   label: '셀피 엽서 (100×148mm)' },
+    '4x6':    { w: 101.6, h: 152.4, label: '4×6인치 (102×152mm)' }
+  };
+
+  function applyPrintPageStyle(){
+    const p = PRINT_PAPERS[settings.printPaper] || PRINT_PAPERS.postcard;
+    const z = 1 + (Number(settings.printBleed) || 0) / 100;
+    let el = document.getElementById('print-page-style');
+    if(!el){
+      el = document.createElement('style');
+      el.id = 'print-page-style';
+      document.head.appendChild(el);
+    }
+    el.textContent = `
+      @page{ size:${p.w}mm ${p.h}mm; margin:0; }
+      @media print{
+        html, body{ width:${p.w}mm !important; height:${p.h}mm !important; }
+        #print-area{ width:${p.w}mm !important; height:${p.h}mm !important; overflow:hidden !important; position:relative; }
+        #print-area img{ width:${p.w}mm !important; height:${p.h}mm !important; object-fit:cover !important;
+                         transform:scale(${z}); transform-origin:center center; }
+      }`;
+  }
+
+  // 테스트 인쇄: 종이 끝까지 색이 차는지, 몇 mm가 잘리는지 확인
+  function makePrintTestImage(){
+    const p = PRINT_PAPERS[settings.printPaper] || PRINT_PAPERS.postcard;
+    const W = 1200, H = Math.round(W * p.h / p.w), mm = W / p.w;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#f472b6'); g.addColorStop(1, '#a78bfa');
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+
+    const box = (inset, color, label) => {
+      const d = inset * mm;
+      x.strokeStyle = color; x.lineWidth = 6;
+      x.strokeRect(d, d, W - d*2, H - d*2);
+      x.fillStyle = color; x.font = 'bold 38px sans-serif'; x.textAlign = 'left'; x.textBaseline = 'top';
+      x.fillText(label, d + 14, d + 10);
+    };
+    box(3, '#ffffff', '3mm');
+    box(6, '#fde047', '6mm (제목·날짜 안전선)');
+
+    x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = 'bold 96px sans-serif';
+    x.fillText('행복네컷', W/2, H*0.30);
+    x.font = 'bold 60px sans-serif';
+    x.fillText('테스트 인쇄', W/2, H*0.30 + 110);
+    x.font = '42px sans-serif';
+    const lines = [
+      '용지: ' + p.label,
+      '',
+      '① 분홍색이 종이 끝까지 차면 → 성공',
+      '② 흰 테두리가 있으면 → 프린터 용지를',
+      '    "테두리 없음(Borderless)"으로',
+      '③ 노란 6mm 선이 보이면 → 제목·날짜 OK',
+      '④ 3mm 선까지 보이면 → 잘림 거의 없음'
+    ];
+    lines.forEach((t, i) => x.fillText(t, W/2, H*0.52 + i*62));
+    return c.toDataURL('image/jpeg', 0.92);
+  }
+
+  async function printTestPage(){
+    const img = document.getElementById('print-img');
+    if(!img) return;
+    await new Promise(resolve => { img.onload = resolve; img.onerror = resolve; img.src = makePrintTestImage(); });
+    try{ if(img.decode) await img.decode(); }catch(_){}
+    applyPrintPageStyle();
+    window.print();
+    // 다음 사진 인쇄 때 다시 결과 사진을 넣도록 비움
+    img.removeAttribute('src');
+  }
+
   async function printResult(){
     if(state._printing) return;
     state._printing = true;
@@ -3782,6 +3887,7 @@
       }
       try{ if(img.decode) await img.decode(); }catch(_){}
 
+      applyPrintPageStyle();   // ✅ V3.83: 용지 크기(셀피 엽서 100x148mm 등)
       window.print();
 
       // ✅ V3.70 (B3): 인쇄 후 QR 창 → 인쇄물과 함께 휴대폰에도 저장
@@ -4065,6 +4171,8 @@
     attractSec: 20,        // ✅ V3.80: 시작 화면에서 입력이 없을 때 대기 화면까지(초)
     attractShowCount: true,// ✅ V3.80: 대기 화면에 "오늘 N팀" 표시
     bigScreen: true,       // ✅ V3.80: 큰 화면(가로 모니터)에서 앱 확대
+    printPaper: 'postcard',// ✅ V3.83: 인쇄 용지 (postcard = 셀피 엽서 100x148mm / 4x6)
+    printBleed: 0,         // ✅ V3.83: 인쇄 확대(%) 0 / 2 / 4
     // ✅ V3.60
     defaultLayout: 'strip',// 기본 레이아웃
     showShare: true,       // "QR로 사진 받기" 버튼 (주소가 있어야 표시)
@@ -4085,6 +4193,8 @@
     s.attractSec       = pick(s.attractSec, [10,20,30,60,120], DEFAULT_SETTINGS.attractSec);
     s.attractShowCount = !!s.attractShowCount;
     s.bigScreen        = !!s.bigScreen;
+    s.printPaper       = (s.printPaper === '4x6') ? '4x6' : 'postcard';
+    s.printBleed       = pick(s.printBleed, [0,2,4], DEFAULT_SETTINGS.printBleed);
     s.showShootOptions = !!s.showShootOptions;
     s.showPrint = !!s.showPrint;
     s.showSave  = !!s.showSave;
@@ -4170,6 +4280,8 @@
     set('adm-attract-sec', settings.attractSec);
     chk('adm-attract-count', settings.attractShowCount);
     chk('adm-big-screen', settings.bigScreen);
+    const pp = document.getElementById('adm-print-paper'); if(pp) pp.value = settings.printPaper;
+    set('adm-print-bleed', settings.printBleed);
     const sn = document.getElementById('adm-stats-n');
     if(sn) sn.textContent = String(loadStats().count);
     set('adm-layout', settings.defaultLayout);
@@ -4213,6 +4325,8 @@
       attractSec: val('adm-attract-sec'),
       attractShowCount: chk('adm-attract-count'),
       bigScreen: chk('adm-big-screen'),
+      printPaper: (document.getElementById('adm-print-paper') || {}).value || 'postcard',
+      printBleed: val('adm-print-bleed'),
       defaultLayout: val('adm-layout'),
       showShare: chk('adm-show-share'),
       shareAuto: chk('adm-share-auto'),
